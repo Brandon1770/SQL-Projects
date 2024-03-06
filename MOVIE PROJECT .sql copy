@@ -1,0 +1,66 @@
+-- Firstly the individual tables will be established 
+SELECT * FROM earning;
+SELECT * FROM imdb;
+
+
+--Looking at the Budgets, Revenue's and Profit of each movie Ordered from Largest to smallest
+SELECT i.Title , i.Budget , e.Domestic , e.Worldwide ,  e.Domestic + e.Worldwide - i.Budget AS 'Profit'
+FROM earning e
+INNER JOIN imdb i
+ON e.Movie_id = i.Movie_id 
+ORDER BY Profit DESC;
+
+
+--Looking at the top 10 films in terms of Domestic Revenue
+SELECT i.Title , e.Domestic 
+FROM earning e
+INNER JOIN imdb i 
+ON e.Movie_id = i.Movie_id 
+ORDER BY Domestic DESC 
+LIMIT 10;
+
+
+-- Looking at the botttom 10 films in terms of Worldwide Revenue 
+SELECT i.Title , e.Worldwide 
+FROM earning e
+INNER JOIN imdb i 
+ON e.Movie_id = i.Movie_id 
+ORDER BY Worldwide 
+LIMIT 10;
+
+
+-- Looking at Revenues of all the films that were released in the year 2010
+SELECT i.Title , e.Domestic , e.Worldwide 
+FROM earning e 
+INNER JOIN imdb i 
+ON e.Movie_id = i.Movie_id 
+WHERE Title LIKE '%(2010)'
+ORDER BY Title;
+
+
+-- Looking at the Lowest Rating value 
+SELECT Title , MIN(Rating)  AS 'Lowest Rating Value'
+FROM imdb;
+
+
+--Looking at the highest Budget Value for a film that was released in 2015 
+SELECT Title , MAX(Budget)  AS 'Highest Budget Value in 2015'
+FROM imdb
+WHERE Title LIKE '%(2015)';
+
+
+-- Looking at the average Rating Value 
+SELECT AVG(Rating) AS 'Average Rating Value'
+FROM imdb;
+
+
+-- Looking at the average Rating for all the films released in 2013 
+SELECT AVG(Rating) AS 'Average Rating in 2013'
+FROM imdb
+WHERE Title LIKE '%(2013)';
+
+
+
+
+
+

@@ -1,0 +1,115 @@
+-- Firstly establish the two tables that will be analysed 
+SELECT * FROM divisions;
+SELECT * FROM matchs;
+
+
+-- Looking at the distinct amount of seasons which consists within the data 
+SELECT DISTINCT season FROM matchs;
+
+
+-- Looking at the overall Full time home goals (FTHG) for each season and ordering them from largest to smallest 
+SELECT season , SUM(FTHG) FROM matchs
+GROUP BY season
+ORDER BY SUM(FTHG) DESC;
+-- Looking at the overall Full time away goals (FTAG) for each season and ordering them from largest to smallest 
+SELECT season , SUM(FTAG) FROM matchs
+GROUP BY season
+ORDER BY SUM(FTAG) DESC;
+-- Looking at the average full time home goals and away goals 
+SELECT AVG(FTHG) , AVG(FTAG) FROM matchs;
+-- It can be vividlly seen from the data that there are more home goals recorded compared to away goals 
+
+
+-- Looking at the individual home teams within the Premier League in England
+SELECT DISTINCT d.country , d.name , m.HomeTeam 
+FROM divisions d 
+INNER JOIN matchs m 
+ON d.division = m.Div
+WHERE name = 'Premier League';
+-- Looking at the overall full time home goals scored by each home team in the Premier League throughout the seasons 
+SELECT DISTINCT d.country , d.name , m.HomeTeam , SUM(FTHG) AS 'Total Home Goals'
+FROM divisions d 
+INNER JOIN matchs m 
+ON d.division = m.Div
+WHERE name = 'Premier League'
+GROUP BY HomeTeam
+ORDER BY SUM(FTHG) DESC;
+/*Looking at the average full time goals scored for Man City (most home goals scored) and
+    Wigan (20th most home goals scored) */
+SELECT DISTINCT d.country , d.name , m.HomeTeam , AVG(FTHG) AS 'Average FT Home Goals'
+FROM divisions d 
+INNER JOIN matchs m 
+ON d.division = m.Div
+WHERE name = 'Premier League' AND HomeTeam = 'Man City' OR HomeTeam = 'Wigan'
+GROUP BY HomeTeam
+ORDER BY AVG(FTHG) DESC;
+
+/*Counting seperately how many away wins, draws and home wins 
+   are in the Spanish division LaLiga (SP1) in the overall seasons */
+SELECT d.name , m.FTR , COUNT(m.FTR) AS 'The Number of Results '
+FROM divisions d 
+INNER JOIN matchs m 
+ON d.division = m.Div 
+WHERE name = 'LaLiga' 
+GROUP BY FTR;
+/*Counting Seperately how many away wins, draws and home wins in 
+   the Spanish division LaLiga (SP1) from the season 2011 */
+SELECT d.name , m.season  , m.FTR , COUNT(m.FTR) AS 'The Number of Results' 
+FROM divisions d 
+INNER JOIN matchs m 
+ON d.division = m.Div 
+WHERE name = 'LaLiga' AND season = '2011' 
+GROUP BY FTR;
+
+-- Looking at the total matches played in all the individual divisions
+SELECT d.name , COUNT(m.FTR) AS 'Total Number of matches'
+FROM divisions d 
+INNER JOIN matchs m 
+ON d.division = m.Div 
+GROUP BY name 
+ORDER BY COUNT(m.FTR) DESC;
+/*The Seria A, Premier League and LaLiga will be the 3 divisions that will be looked at in the next 
+   step of analysis due to them having the same number of games played */
+--Looking at which league amongst the selected 3 has the best performing away teams in terms away wins
+SELECT d.name , m.FTR , COUNT(m.FTR) AS 'Amount of Away wins'
+FROM divisions d 
+INNER JOIN matchs m 
+ON d.division = m.Div 
+WHERE FTR = 'A' AND name = 'Seria A' 
+OR FTR = 'A' AND name = 'Premier League'
+OR FTR ='A' AND name = 'LaLiga'
+GROUP BY name
+ORDER BY COUNT(m.FTR) DESC;
+/*It can be seen that with the same overall matches played the 
+   Premier League has the most away wins compared to Seria A and LaLiga */
+
+
+/*Looking at the results of the matches that were played in 
+   November in the 2015 season across all divisions */
+SELECT m.date , d.name , m.HomeTeam , m.AwayTeam , m.FTHG , m.FTAG , m.FTR  , m.season
+FROM divisions d 
+INNER JOIN matchs m 
+ON d.division = m.Div 
+WHERE Date LIKE '%-11-%'
+AND season = '2015';
+/*Looking for the game with the highest full time home goals scored
+   in a single game during November in the 2015 season */
+SELECT m.date , d.name , m.HomeTeam , m.AwayTeam , MAX(FTHG) , m.FTAG , m.FTR  , m.season
+FROM divisions d 
+INNER JOIN matchs m 
+ON d.division = m.Div 
+WHERE Date LIKE '%-11-%'
+AND season = '2015';
+/*Looking at the results of the matches that were played between
+   November 1st and November 20th in the 2015 season across all divisions */
+SELECT m.date , d.name , m.HomeTeam , m.AwayTeam , m.FTHG , m.FTAG , m.FTR  , m.season
+FROM divisions d 
+INNER JOIN matchs m 
+ON d.division = m.Div 
+WHERE Date LIKE '%-11-%' AND date between '2014-11-01' AND '2014-11-20'
+AND season = '2015';
+
+
+
+
+
